@@ -1,0 +1,138 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using CadastroBancoDb.Models;
+using CadastroBancoDb.Context;
+
+namespace CadastroBancoDb.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TransacoesController : ControllerBase
+    {
+        private readonly Db_CadastroDeBancoContext _context;
+
+        public TransacoesController(Db_CadastroDeBancoContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Transacoes
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Transacao>>> GetTransacaos()
+        {
+          if (_context.Transacaos == null)
+          {
+              return NotFound();
+          }
+            return await _context.Transacaos.ToListAsync();
+        }
+
+        // GET: api/Transacoes/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Transacao>> GetTransacao(int id)
+        {
+          if (_context.Transacaos == null)
+          {
+              return NotFound();
+          }
+            var transacao = await _context.Transacaos.FindAsync(id);
+
+            if (transacao == null)
+            {
+                return NotFound();
+            }
+
+            return transacao;
+        }
+
+        // PUT: api/Transacoes/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTransacao(int id, Transacao transacao)
+        {
+            if (id != transacao.Idtransacao)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(transacao).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TransacaoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Transacoes
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
+        {
+          if (_context.Transacaos == null)
+          {
+              return Problem("Entity set 'Db_CadastroDeBancoContext.Transacaos'  is null.");
+          }
+            _context.Transacaos.Add(transacao);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (TransacaoExists(transacao.Idtransacao))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetTransacao", new { id = transacao.Idtransacao }, transacao);
+        }
+
+        // DELETE: api/Transacoes/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTransacao(int id)
+        {
+            if (_context.Transacaos == null)
+            {
+                return NotFound();
+            }
+            var transacao = await _context.Transacaos.FindAsync(id);
+            if (transacao == null)
+            {
+                return NotFound();
+            }
+
+            _context.Transacaos.Remove(transacao);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool TransacaoExists(int id)
+        {
+            return (_context.Transacaos?.Any(e => e.Idtransacao == id)).GetValueOrDefault();
+        }
+    }
+}
