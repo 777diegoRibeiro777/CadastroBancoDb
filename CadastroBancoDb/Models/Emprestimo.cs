@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CadastroBancoDb.Models
 {
     public partial class Emprestimo
     {
+        [Key]
         public int Idemprestimo { get; set; }
         public decimal? ValorEmprestimo { get; set; }
         public decimal? TaxaJuros { get; set; }

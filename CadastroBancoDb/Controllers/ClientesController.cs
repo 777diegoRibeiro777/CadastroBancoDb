@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public ClientesController(Db_CadastroDeBancoContext context)
+        public ClientesController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Clientes
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
           if (_context.Clientes == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
           if (_context.Clientes == null)
@@ -53,9 +57,11 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutCliente(int id, Cliente cliente)
         {
-            if (id != cliente.NumeroConta)
+            if (id != cliente.Idconta)
             {
                 return BadRequest();
             }
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Clientes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
         {
           if (_context.Clientes == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Clientes'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Clientes'  is null.");
           }
             _context.Clientes.Add(cliente);
             try
@@ -97,7 +105,7 @@ namespace CadastroBancoDb.Controllers
             }
             catch (DbUpdateException)
             {
-                if (ClienteExists(cliente.NumeroConta))
+                if (ClienteExists(cliente.Idconta))
                 {
                     return Conflict();
                 }
@@ -107,11 +115,13 @@ namespace CadastroBancoDb.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCliente", new { id = cliente.NumeroConta }, cliente);
+            return CreatedAtAction("GetCliente", new { id = cliente.Idconta }, cliente);
         }
 
         // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteCliente(int id)
         {
             if (_context.Clientes == null)
@@ -132,7 +142,7 @@ namespace CadastroBancoDb.Controllers
 
         private bool ClienteExists(int id)
         {
-            return (_context.Clientes?.Any(e => e.NumeroConta == id)).GetValueOrDefault();
+            return (_context.Clientes?.Any(e => e.Idconta == id)).GetValueOrDefault();
         }
     }
 }

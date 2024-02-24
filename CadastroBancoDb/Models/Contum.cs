@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CadastroBancoDb.Models
 {
@@ -10,7 +11,8 @@ namespace CadastroBancoDb.Models
             Transacaos = new HashSet<Transacao>();
         }
 
-        public int NumeroConta { get; set; }
+        [Key]
+        public int Idconta { get; set; }
         public string? TipoConta { get; set; }
         public decimal? Saldo { get; set; }
         public int? ClienteTitular { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class FuncionariosController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public FuncionariosController(Db_CadastroDeBancoContext context)
+        public FuncionariosController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Funcionarios
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Funcionario>>> GetFuncionarios()
         {
           if (_context.Funcionarios == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Funcionarios/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Funcionario>> GetFuncionario(int id)
         {
           if (_context.Funcionarios == null)
@@ -53,6 +57,8 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Funcionarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutFuncionario(int id, Funcionario funcionario)
         {
             if (id != funcionario.Idfuncionario)
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Funcionarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Funcionario>> PostFuncionario(Funcionario funcionario)
         {
           if (_context.Funcionarios == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Funcionarios'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Funcionarios'  is null.");
           }
             _context.Funcionarios.Add(funcionario);
             try
@@ -112,6 +120,8 @@ namespace CadastroBancoDb.Controllers
 
         // DELETE: api/Funcionarios/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteFuncionario(int id)
         {
             if (_context.Funcionarios == null)

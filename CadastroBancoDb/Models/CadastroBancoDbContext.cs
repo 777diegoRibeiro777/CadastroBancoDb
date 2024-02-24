@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using CadastroBancoDb.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CadastroBancoDb.Context
+namespace CadastroBancoDb.Models
 {
-    public partial class Db_CadastroDeBancoContext : DbContext
+    public partial class CadastroBancoDbContext : IdentityDbContext<IdentityUser>
     {
-        public Db_CadastroDeBancoContext()
+        public CadastroBancoDbContext()
         {
         }
 
-        public Db_CadastroDeBancoContext(DbContextOptions<Db_CadastroDeBancoContext> options)
+        public CadastroBancoDbContext(DbContextOptions<CadastroBancoDbContext> options)
             : base(options)
         {
         }
@@ -33,12 +34,15 @@ namespace CadastroBancoDb.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Agencium>(entity =>
             {
-                entity.HasKey(e => e.NumeroAgencia)
-                    .HasName("PK__Agencia__CA5B9A1DE9F9B3F6");
+                entity.HasKey(e => e.Idagencia)
+                    .HasName("PK__Agencia__ECA89708C3F76E03");
 
-                entity.Property(e => e.NumeroAgencia).ValueGeneratedNever();
+                entity.Property(e => e.Idagencia)
+                    .ValueGeneratedNever()
+                    .HasColumnName("IDAgencia");
 
                 entity.Property(e => e.Endereco).HasMaxLength(255);
 
@@ -49,12 +53,14 @@ namespace CadastroBancoDb.Context
 
             modelBuilder.Entity<Cliente>(entity =>
             {
-                entity.HasKey(e => e.NumeroConta)
-                    .HasName("PK__Cliente__C551C75D41BA008C");
+                entity.HasKey(e => e.Idconta)
+                    .HasName("PK__Cliente__FBA4DC180B643728");
 
                 entity.ToTable("Cliente");
 
-                entity.Property(e => e.NumeroConta).ValueGeneratedNever();
+                entity.Property(e => e.Idconta)
+                    .ValueGeneratedNever()
+                    .HasColumnName("IDConta");
 
                 entity.Property(e => e.Email).HasMaxLength(100);
 
@@ -67,10 +73,12 @@ namespace CadastroBancoDb.Context
 
             modelBuilder.Entity<Contum>(entity =>
             {
-                entity.HasKey(e => e.NumeroConta)
-                    .HasName("PK__Conta__C551C75D5B3F2973");
+                entity.HasKey(e => e.Idconta)
+                    .HasName("PK__Conta__FBA4DC186984DEB5");
 
-                entity.Property(e => e.NumeroConta).ValueGeneratedNever();
+                entity.Property(e => e.Idconta)
+                    .ValueGeneratedNever()
+                    .HasColumnName("IDConta");
 
                 entity.Property(e => e.Saldo).HasColumnType("decimal(18, 2)");
 
@@ -79,13 +87,13 @@ namespace CadastroBancoDb.Context
                 entity.HasOne(d => d.ClienteTitularNavigation)
                     .WithMany(p => p.Conta)
                     .HasForeignKey(d => d.ClienteTitular)
-                    .HasConstraintName("FK__Conta__ClienteTi__398D8EEE");
+                    .HasConstraintName("FK__Conta__ClienteTi__4BAC3F29");
             });
 
             modelBuilder.Entity<Emprestimo>(entity =>
             {
                 entity.HasKey(e => e.Idemprestimo)
-                    .HasName("PK__Empresti__4DAA6446DCF653B4");
+                    .HasName("PK__Empresti__4DAA6446F7FD9207");
 
                 entity.ToTable("Emprestimo");
 
@@ -102,13 +110,13 @@ namespace CadastroBancoDb.Context
                 entity.HasOne(d => d.ClienteBeneficiarioNavigation)
                     .WithMany(p => p.Emprestimos)
                     .HasForeignKey(d => d.ClienteBeneficiario)
-                    .HasConstraintName("FK__Emprestim__Clien__403A8C7D");
+                    .HasConstraintName("FK__Emprestim__Clien__52593CB8");
             });
 
             modelBuilder.Entity<Funcionario>(entity =>
             {
                 entity.HasKey(e => e.Idfuncionario)
-                    .HasName("PK__Funciona__3E1A7BE7DB415507");
+                    .HasName("PK__Funciona__3E1A7BE758D8DED2");
 
                 entity.ToTable("Funcionario");
 
@@ -128,7 +136,7 @@ namespace CadastroBancoDb.Context
             modelBuilder.Entity<Transacao>(entity =>
             {
                 entity.HasKey(e => e.Idtransacao)
-                    .HasName("PK__Transaca__07EB7E5B096001C6");
+                    .HasName("PK__Transaca__07EB7E5B2BECF669");
 
                 entity.ToTable("Transacao");
 
@@ -145,7 +153,7 @@ namespace CadastroBancoDb.Context
                 entity.HasOne(d => d.ContaEnvolvidaNavigation)
                     .WithMany(p => p.Transacaos)
                     .HasForeignKey(d => d.ContaEnvolvida)
-                    .HasConstraintName("FK__Transacao__Conta__4316F928");
+                    .HasConstraintName("FK__Transacao__Conta__5535A963");
             });
 
             OnModelCreatingPartial(modelBuilder);

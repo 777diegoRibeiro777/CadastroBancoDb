@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class ContasController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public ContasController(Db_CadastroDeBancoContext context)
+        public ContasController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Contas
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Contum>>> GetConta()
         {
           if (_context.Conta == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Contas/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Contum>> GetContum(int id)
         {
           if (_context.Conta == null)
@@ -53,9 +57,11 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Contas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutContum(int id, Contum contum)
         {
-            if (id != contum.NumeroConta)
+            if (id != contum.Idconta)
             {
                 return BadRequest();
             }
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Contas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Contum>> PostContum(Contum contum)
         {
           if (_context.Conta == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Conta'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Conta'  is null.");
           }
             _context.Conta.Add(contum);
             try
@@ -97,7 +105,7 @@ namespace CadastroBancoDb.Controllers
             }
             catch (DbUpdateException)
             {
-                if (ContumExists(contum.NumeroConta))
+                if (ContumExists(contum.Idconta))
                 {
                     return Conflict();
                 }
@@ -107,11 +115,13 @@ namespace CadastroBancoDb.Controllers
                 }
             }
 
-            return CreatedAtAction("GetContum", new { id = contum.NumeroConta }, contum);
+            return CreatedAtAction("GetContum", new { id = contum.Idconta }, contum);
         }
 
         // DELETE: api/Contas/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteContum(int id)
         {
             if (_context.Conta == null)
@@ -132,7 +142,7 @@ namespace CadastroBancoDb.Controllers
 
         private bool ContumExists(int id)
         {
-            return (_context.Conta?.Any(e => e.NumeroConta == id)).GetValueOrDefault();
+            return (_context.Conta?.Any(e => e.Idconta == id)).GetValueOrDefault();
         }
     }
 }

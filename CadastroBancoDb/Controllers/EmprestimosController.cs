@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class EmprestimosController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public EmprestimosController(Db_CadastroDeBancoContext context)
+        public EmprestimosController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Emprestimos
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Emprestimo>>> GetEmprestimos()
         {
           if (_context.Emprestimos == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Emprestimos/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Emprestimo>> GetEmprestimo(int id)
         {
           if (_context.Emprestimos == null)
@@ -53,6 +57,8 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Emprestimos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutEmprestimo(int id, Emprestimo emprestimo)
         {
             if (id != emprestimo.Idemprestimo)
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Emprestimos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Emprestimo>> PostEmprestimo(Emprestimo emprestimo)
         {
           if (_context.Emprestimos == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Emprestimos'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Emprestimos'  is null.");
           }
             _context.Emprestimos.Add(emprestimo);
             try
@@ -112,6 +120,8 @@ namespace CadastroBancoDb.Controllers
 
         // DELETE: api/Emprestimos/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteEmprestimo(int id)
         {
             if (_context.Emprestimos == null)

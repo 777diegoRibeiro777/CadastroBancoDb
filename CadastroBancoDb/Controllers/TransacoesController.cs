@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class TransacoesController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public TransacoesController(Db_CadastroDeBancoContext context)
+        public TransacoesController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Transacoes
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Transacao>>> GetTransacaos()
         {
           if (_context.Transacaos == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Transacoes/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Transacao>> GetTransacao(int id)
         {
           if (_context.Transacaos == null)
@@ -53,6 +57,8 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Transacoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutTransacao(int id, Transacao transacao)
         {
             if (id != transacao.Idtransacao)
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Transacoes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Transacao>> PostTransacao(Transacao transacao)
         {
           if (_context.Transacaos == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Transacaos'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Transacaos'  is null.");
           }
             _context.Transacaos.Add(transacao);
             try
@@ -112,6 +120,8 @@ namespace CadastroBancoDb.Controllers
 
         // DELETE: api/Transacoes/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteTransacao(int id)
         {
             if (_context.Transacaos == null)

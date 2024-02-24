@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CadastroBancoDb.Models;
-using CadastroBancoDb.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CadastroBancoDb.Controllers
 {
@@ -14,15 +14,17 @@ namespace CadastroBancoDb.Controllers
     [ApiController]
     public class AgenciasController : ControllerBase
     {
-        private readonly Db_CadastroDeBancoContext _context;
+        private readonly CadastroBancoDbContext _context;
 
-        public AgenciasController(Db_CadastroDeBancoContext context)
+        public AgenciasController(CadastroBancoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Agencias
         [HttpGet]
+        [Authorize]
+
         public async Task<ActionResult<IEnumerable<Agencium>>> GetAgencia()
         {
           if (_context.Agencia == null)
@@ -34,6 +36,8 @@ namespace CadastroBancoDb.Controllers
 
         // GET: api/Agencias/5
         [HttpGet("{id}")]
+        [Authorize]
+
         public async Task<ActionResult<Agencium>> GetAgencium(int id)
         {
           if (_context.Agencia == null)
@@ -53,9 +57,11 @@ namespace CadastroBancoDb.Controllers
         // PUT: api/Agencias/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> PutAgencium(int id, Agencium agencium)
         {
-            if (id != agencium.NumeroAgencia)
+            if (id != agencium.Idagencia)
             {
                 return BadRequest();
             }
@@ -84,11 +90,13 @@ namespace CadastroBancoDb.Controllers
         // POST: api/Agencias
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<Agencium>> PostAgencium(Agencium agencium)
         {
           if (_context.Agencia == null)
           {
-              return Problem("Entity set 'Db_CadastroDeBancoContext.Agencia'  is null.");
+              return Problem("Entity set 'CadastroBancoDbContext.Agencia'  is null.");
           }
             _context.Agencia.Add(agencium);
             try
@@ -97,7 +105,7 @@ namespace CadastroBancoDb.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AgenciumExists(agencium.NumeroAgencia))
+                if (AgenciumExists(agencium.Idagencia))
                 {
                     return Conflict();
                 }
@@ -107,11 +115,13 @@ namespace CadastroBancoDb.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAgencium", new { id = agencium.NumeroAgencia }, agencium);
+            return CreatedAtAction("GetAgencium", new { id = agencium.Idagencia }, agencium);
         }
 
         // DELETE: api/Agencias/5
         [HttpDelete("{id}")]
+        [Authorize]
+
         public async Task<IActionResult> DeleteAgencium(int id)
         {
             if (_context.Agencia == null)
@@ -132,7 +142,7 @@ namespace CadastroBancoDb.Controllers
 
         private bool AgenciumExists(int id)
         {
-            return (_context.Agencia?.Any(e => e.NumeroAgencia == id)).GetValueOrDefault();
+            return (_context.Agencia?.Any(e => e.Idagencia == id)).GetValueOrDefault();
         }
     }
 }
